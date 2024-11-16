@@ -49,6 +49,9 @@ namespace SnakeGame
 
             //add a snake
             AddSnake();
+
+            //add food
+            AddFood();
         }
 
         //Method to add a snake to the grid
@@ -70,9 +73,52 @@ namespace SnakeGame
             //now we can call AddSnake() from the constructor
         }
 
-        //now we need to add food
+        //now we need to add food, but before we need to get empty grid positions
 
         //Method to return all empty grid positions
+        private IEnumerable<Position> EmptyPositions()
+        {
+            //here we loop through all rows and columns 
+            for (int r = 0; r < Rows; r++)
+            {
+                for (int c = 0; c <= Cols; c++)
+                {
+                    //inside the loop we check if the grid at r, c is Empty 
+                    if (Grid[r,c] == GridValue.Empty)
+                    {
+                        //if so we yield return that position
+                        yield return new Position(r, c);
+                    }
+                }
+            }
+        }
+
+        //now we can add food
+        //Method to add food
+        private void AddFood()
+        {
+            //first we create a list of empty positions
+            List<Position> empty = new List<Position>(EmptyPositions());
+
+            //it is theoretically possible to beat snake in which case there wouldn't be any empty positions 
+            //if someone actually does that it would be a bomber if the game crashed
+            //so, if there are no empty positions we simply return
+
+            if (empty.Count == 0)
+            {
+                return;
+            }
+
+            //in the general case we pick an empty position at random 
+            Position pos = empty[random.Next(empty.Count)];
+            //and set the corresponding array entry to GridValue.Food
+            Grid[pos.Row,pos.Col] = GridValue.Food;
+
+            //another way to do it would be repeatedly generate random positions and check if they are empty
+            //if you choose this approach make sure you have a way of detecting when there are none of them.
+
+            //AddFood() should be called in the constructor just like AddSnake()
+        }
 
     }
 }
