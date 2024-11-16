@@ -147,6 +147,38 @@ namespace SnakeGame
         //note that these methods are PUBLIC
         //later we will use head position to add eyes to the snake and you could also add a special tail using tail position
 
+        //ADD TWO METHODS FOR MODIFYING THE SNAKE
 
+        //Method to add the given position to the front of the snake making it the new head
+        private void AddHead(Position pos)
+        {
+            //so, we must add this position to the front of our list
+            snakePositions.AddFirst(pos);
+            //and set the corresponding entry of the grid array to GridValue.Snake
+            Grid[pos.Row, pos.Col] = GridValue.Snake;
+        }
+
+        //Method to remove the tail
+        private void RemoveTail()
+        {
+            //we start by getting the current tail position
+            Position tail = snakePositions.Last.Value;
+            //then we make that position empty in the grid
+            Grid[tail.Row, tail.Col] = GridValue.Empty;
+            //and remove it from the linked list
+            snakePositions.RemoveLast();
+        }
+
+        //these two methods will be useful when we have to move the snake
+
+        //NOW WE NEED TO ADD SOME PUBLIC METHODS FOR MODIFYING THE GAME STATE
+
+        //Method to change the snake's direction
+        public void ChangeDirection(Direction dir)
+        {
+            //for now it will simply set the direction property to the given direction parameter
+            Dir = dir;
+            //it's a bit too simplistic, but we will come back and change it once the problem becomes apparent
+        }
     }
 }
