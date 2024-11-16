@@ -93,7 +93,8 @@ namespace SnakeGame
             }
         }
 
-        //now we can add food
+        //NOW WE CAN ADD FOOD
+
         //Method to add food
         private void AddFood()
         {
@@ -119,6 +120,33 @@ namespace SnakeGame
 
             //AddFood() should be called in the constructor just like AddSnake()
         }
+
+        //ADD A FEW SNAKE-RELATED METHODS
+
+        //Method to return the position of the snake's head
+        public Position HeadPosition()
+        {
+            //we can easily get this position from the linked list
+            return snakePositions.First.Value;
+        }
+
+        //Similar method for the tail position
+        public Position TailPosition()
+        {
+            //we can easily get this position from the other end of the linked list
+            return snakePositions.Last.Value;
+        }
+
+        //Method to return all snake's positions as an IEnumerable
+        //thos method will be handy when the snake dies and we turn it dark green
+        public IEnumerable<Position> SnakePositions()
+        {
+            return snakePositions;
+        }
+
+        //note that these methods are PUBLIC
+        //later we will use head position to add eyes to the snake and you could also add a special tail using tail position
+
 
     }
 }
