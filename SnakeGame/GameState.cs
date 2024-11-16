@@ -180,5 +180,77 @@ namespace SnakeGame
             Dir = dir;
             //it's a bit too simplistic, but we will come back and change it once the problem becomes apparent
         }
+
+        //WE NEED A WAY TO MOVE THE SNAKE
+
+        //Method to check if the given is outside the grid or not
+        private bool OutsideGrid(Position pos)
+        {
+            return pos.Row < 0 || pos.Col >= Rows || pos.Col < 0 || pos.Col >= Cols;
+        }
+
+        //Method to take a position as parameter and returns what the snake would hit if it moved there
+        private GridValue WillHit(Position newHeadPos)
+        {
+            //in the general case it will just return what is stored in the grid at that position
+            //but there are 2 special cases we must handle 
+
+            if (OutsideGrid(newHeadPos))
+            {
+                //if the new head position would be outside the grid 
+                //then we return our special grid value called 'Outside'
+                return GridValue.Outside;
+            }
+
+            //if the next head position will take the place of the current tail position it should work
+            //because the tail will be removed from this position as the head takes this position
+            //to handle this case we need to check if the new head position is the same as the current tail position
+            if (newHeadPos == TailPosition())
+            {
+                //if it is then the tail will move out of the way and that square will be empty
+                return GridValue.Empty;
+                //but depending on what logic you prefer, maybe you choose that the game should end in this case (=consider as if the snake hits itself)
+                //in this approach you can get rid of this check
+            }
+
+            return Grid[newHeadPos.Row, newHeadPos.Col];           
+        }
+
+        //now we can write a public Move() method
+        //it will move the snake one step in the current direction
+        public void Move()
+        {
+            //first we get the new head position
+            //remember that Translate() method returns the position we get by moving one step in the given direction
+            Position newHeadPos = HeadPosition().Translate(Dir);
+
+            //then we check what the head will hit using WillHit() method
+            GridValue hit = WillHit(newHeadPos);
+
+            //if 'hit' is GridValue.Outside OR GridValue.Snake, then we set GameOver to true
+            if(hit == GridValue.Outside || hit == GridValue.Snake)
+            {
+                GameOver = true;
+            }
+
+            //if the snake will move into an empty position, we remove the current tail and add the new head
+            else if(hit == GridValue.Empty)
+            {
+                RemoveTail();
+                AddHead(newHeadPos);
+            }
+
+            //and if it hits a position with food, then we DON'T remove the tail but we DO add a new head
+            else if (hit == GridValue.Food)
+            {
+                AddHead(newHeadPos);
+                //we should also increment the score
+                Score++;
+                //and spawn the food somewhere else
+                AddFood();
+            }
+        }
+
+        //we will return to the GameState later to fix a few things 
     }
 }
