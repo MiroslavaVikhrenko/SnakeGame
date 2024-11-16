@@ -46,13 +46,33 @@ namespace SnakeGame
 
             //when the game starts I want this next direction to be right
             Dir = Direction.Right;
+
+            //add a snake
+            AddSnake();
         }
 
         //Method to add a snake to the grid
         private void AddSnake()
         {
+            //I want it to appear in the middle row in column 1, 2, 3
+            //first we create a variable for the middle row
+            //if you use even number of rows for your game then this row will be slightly closer to the top
+            int r = Rows / 2;
 
+            //next we loop over the columns from 1 to 3 
+            for (int c = 1; c <= 3; c++)
+            {
+                //inside the loop we set the grid entry at r, c to GridValue.Snake
+                Grid[r, c] = GridValue.Snake;
+                //we must also remember to add this position to the snakePositions list
+                snakePositions.AddFirst(new Position(r, c));
+            }
+            //now we can call AddSnake() from the constructor
         }
+
+        //now we need to add food
+
+        //Method to return all empty grid positions
 
     }
 }
