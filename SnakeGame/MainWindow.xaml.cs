@@ -312,7 +312,7 @@ namespace SnakeGame
         private async Task ShowGameOver()
         {
             //draw dead snake
-            DrawDeadSnake();
+            await DrawDeadSnake();
 
             //it starts with a 1 sec delay
             await Task.Delay(1000);
