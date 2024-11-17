@@ -81,7 +81,7 @@ namespace SnakeGame
             //here we loop through all rows and columns 
             for (int r = 0; r < Rows; r++)
             {
-                for (int c = 0; c <= Cols; c++)
+                for (int c = 0; c < Cols; c++)
                 {
                     //inside the loop we check if the grid at r, c is Empty 
                     if (Grid[r,c] == GridValue.Empty)
