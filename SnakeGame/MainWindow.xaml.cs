@@ -191,7 +191,10 @@ namespace SnakeGame
                     Image image = new Image
                     {
                         //initially I want its source to be empty image asset
-                        Source = Images.Empty
+                        Source = Images.Empty,
+                        //we need to set up RenderTransformOrigin to 0.5, 0.5 to ensure correct image rotation
+                        //this will make the images rotate around the center point
+                        RenderTransformOrigin = new Point(0.5, 0.5)
                     };
 
                     //we store this image in the 2d array
@@ -234,6 +237,9 @@ namespace SnakeGame
                     GridValue gridVal = gameState.Grid[r, c];
                     //and set the source for the corresponding image using our dictionary
                     gridImages[r, c].Source = gridValToImage[gridVal];
+
+                    //reset RenderTransform => this ensures that the only rotated image is the one with the snake's head
+                    gridImages[r, c].RenderTransform = Transform.Identity;
                 }
             }
             //we will call DrawGrid() from a more general Draw() method
