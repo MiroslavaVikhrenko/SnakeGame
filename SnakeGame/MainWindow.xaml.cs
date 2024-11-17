@@ -57,8 +57,37 @@ namespace SnakeGame
             Draw();
         }
 
+        //handle some keyboards inputs
+        //Method to be called when a user enters a key
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            //if the game is over, then pressing a key should not do anything => so we simply return
+            if (gameState.GameOver)
+            {
+                return;
+            }
+
+            //otherwise we check which key was pressed 
+            switch (e.Key)
+            {
+                //we will use the arrow keys but we can use any keys we like
+                //if the user presses the left arrow key => we change the snake's direction to left
+                case Key.Left:
+                    gameState.ChangeDirection(Direction.Left); 
+                    break;
+                //similarly for the other arrow keys
+                case Key.Right:
+                    gameState.ChangeDirection(Direction.Right);
+                    break;
+                case Key.Up:
+                    gameState.ChangeDirection(Direction.Up);
+                    break;
+                case Key.Down:
+                    gameState.ChangeDirection(Direction.Down);
+                    break;
+                //now we can change the snake's direction, but we need to do it at regular intervals
+
+            }
 
         }
 
