@@ -51,10 +51,13 @@ namespace SnakeGame
 
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //here we will cal Draw() method 
+            //here we will call Draw() method 
             Draw();
+
+            //start the game loop
+            await GameLoop();
         }
 
         //handle some keyboards inputs
@@ -86,9 +89,27 @@ namespace SnakeGame
                     gameState.ChangeDirection(Direction.Down);
                     break;
                 //now we can change the snake's direction, but we need to do it at regular intervals
+                //for that we add an async game loop method
 
             }
 
+        }
+        //Async Method to change the snake's direction at regular intervals
+        private async Task GameLoop()
+        {
+            //the loop will run until the game is over 
+            while (!gameState.GameOver)
+            {
+                //in the body we add a small delay - I am using 500 milliseconds
+                //but you can change this to make the game slower or faster
+                await Task.Delay(500);
+
+                //after the delay we call the Move() method
+                gameState.Move();
+
+                //and then draw the new game state
+                Draw();
+            }
         }
 
         //Method to set up grid
