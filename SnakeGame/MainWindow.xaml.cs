@@ -61,6 +61,9 @@ namespace SnakeGame
             //here we will call Draw() method 
             Draw();
 
+            //call ShowCountDown() method
+            await ShowCountDown();
+
             //hide overlay
             Overlay.Visibility = Visibility.Hidden;           
 
@@ -209,6 +212,20 @@ namespace SnakeGame
                 }
             }
             //we will call DrawGrid() from a more general Draw() method
+        }
+
+        //Method to show a countdown
+        private async Task ShowCountDown()
+        {
+            //we loop from 3 down to 1
+            for (int i = 3; i >= 1; i--)
+            {
+                //for each iteration we make the overlay text display the value of i,
+                //followe by a small delay
+                OverlayText.Text = i.ToString();
+                await Task.Delay(500);
+            }
+            //we can call this method from RunGame()
         }
     }
 }
