@@ -24,6 +24,12 @@ namespace SnakeGame
         //game over boolean
         public bool GameOver { get; private set; }
 
+        //to allow pressing multiple keys for setting direction changes ahead we need a variable for a buffer
+        //a linked list is a good choice for the operations we need
+        //in ChangeDirection() we won't chage direction immediately 
+        private readonly LinkedList<Direction> dirChanges = new LinkedList<Direction>();
+
+
         //it will be convenient to keep a list containing the positions currently occupied by the snake
         //we use a linked list because it allows us to add and delete from both ends of the list
         //we use the convention that the first element is the head of the snake and
@@ -173,12 +179,50 @@ namespace SnakeGame
 
         //NOW WE NEED TO ADD SOME PUBLIC METHODS FOR MODIFYING THE GAME STATE
 
+        //Method to get the last direction, returns the snake's last predetermined direction
+        private Direction GetLastDirection()
+        {
+            //if the buffer is empty, it just returns the current direction
+            if (dirChanges.Count == 0)
+            {
+                return Dir;
+            }
+
+            //otherwise it returns the last or most recently added direction change
+            return dirChanges.Last.Value;
+
+            //now we can implement CanChangeDirection()
+        }
+
+        //Method to return true if the given direction can be added to the buffer and false otherwise
+        private bool CanChangeDirection(Direction newDir)
+        {
+            //if there are already 2 direction changes stored in the buffer
+            //then we consider buffer to be full and return false
+            if (dirChanges.Count == 2)
+            {
+                return false;
+            }
+            //you could also use 3 as a buffer size but it is important to have a max size
+            //if not, the user can spam keys and pre-determine the snake's movements way too far into the future
+
+            //if there is space in the buffer we get the last pre-determined direction and return true
+            //if the new direction is the same as the last direction and they are not opposites
+
+            Direction lastDir = GetLastDirection();        
+            return newDir != lastDir && newDir != lastDir.Opposite();
+        }
+
         //Method to change the snake's direction
         public void ChangeDirection(Direction dir)
         {
-            //for now it will simply set the direction property to the given direction parameter
-            Dir = dir;
-            //it's a bit too simplistic, but we will come back and change it once the problem becomes apparent
+            //we won't chage direction immediately to prevent a bug when sudden change in direction ends up in hiting the snake itself and ending the game
+            //instead we will check if the change can be made => for the check we need a method GetLastDirection()
+            //and if so, add it to the buffer
+            if (CanChangeDirection(dir))
+            {
+                dirChanges.AddLast(dir);
+            }       
         }
 
         //WE NEED A WAY TO MOVE THE SNAKE
@@ -220,7 +264,16 @@ namespace SnakeGame
         //it will move the snake one step in the current direction
         public void Move()
         {
-            //first we get the new head position
+            //check if there is a direction change in the buffer 
+            if(dirChanges.Count > 0)
+            {
+                //if so, we change the snake's direction accordingly
+                Dir = dirChanges.First.Value;
+                //and remove that direction change from the buffer
+                dirChanges.RemoveFirst();
+            }
+
+            //get the new head position
             //remember that Translate() method returns the position we get by moving one step in the given direction
             Position newHeadPos = HeadPosition().Translate(Dir);
 
@@ -250,7 +303,5 @@ namespace SnakeGame
                 AddFood();
             }
         }
-
-        //we will return to the GameState later to fix a few things 
     }
 }
