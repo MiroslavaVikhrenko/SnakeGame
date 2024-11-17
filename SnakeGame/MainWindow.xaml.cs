@@ -182,6 +182,9 @@ namespace SnakeGame
             GameGrid.Rows = rows;
             GameGrid.Columns = cols;
 
+            //set a ratio for allowing a different number of rows than a number of columns
+            GameGrid.Width = GameGrid.Height * (cols / (double)rows);
+
             //then we loop over all grid positions 
             for (int r = 0; r < rows; r++)
             {
