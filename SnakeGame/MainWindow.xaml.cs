@@ -26,7 +26,22 @@ namespace SnakeGame
 
             //note that we omitted the type after new() keyword => you can only do this in newer versions of C#
             //so if you are having problems the just write the type again
-        };       
+        };
+
+        //add a dictionary to map direction to rotations
+        //for showing the eyes on the snake's head and rotate this image according to the direction
+        //with that in place we can write a DrawSnakeHead() method
+        private readonly Dictionary<Direction, int> dirToRotation = new()
+        {
+            //for the UP direction - we do not need any rotation
+            {Direction.Up, 0 },
+            //for the RIGHT direction - we must rotate 90 degrees
+            {Direction.Right, 90 },
+            //for DOWN - 180 degrees
+            {Direction.Down, 180 },
+            //for LEFT - 270 degrees
+            {Direction.Left, 270 }
+        };
 
         //we need 2 variables for the number of rows and columns, we use 15 rows and 15 columns
         private readonly int rows = 15, cols = 15;
@@ -198,6 +213,9 @@ namespace SnakeGame
         {
             DrawGrid();
 
+            //draw the snake head
+            DrawSnakeHead();
+
             //set the score text to score followed by the actual score stored in the gameState
             ScoreText.Text = $"SCORE: {gameState.Score}";
         }
@@ -219,6 +237,25 @@ namespace SnakeGame
                 }
             }
             //we will call DrawGrid() from a more general Draw() method
+        }
+
+        //Method to draw a snake head
+        private void DrawSnakeHead()
+        {
+            //first we get a position of the snake's head
+            Position headPos = gameState.HeadPosition();
+            //and the grid image for that position
+            Image image = gridImages[headPos.Row, headPos.Col];
+            //next we set its source to the head image
+            image.Source = Images.Head;
+
+            //at this point we must apply the rotation of the image, so that the eyes will face the correct direction
+            //first we get the number of degrees from the dictionary
+            int rotation = dirToRotation[gameState.Dir];
+            //and then we rotate the image by that amount
+            image.RenderTransform = new RotateTransform(rotation);
+
+            //we will call this method from the Draw() method
         }
 
         //Method to show a countdown
