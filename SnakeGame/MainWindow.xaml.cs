@@ -14,6 +14,20 @@ namespace SnakeGame
     ///code behind
     public partial class MainWindow : Window
     {
+        //add a dictionary which maps the grid values to image sources 
+        private readonly Dictionary<GridValue, ImageSource> gridValToImage = new()
+        {
+            //if a grid position is empty => we want to display an empty image asset
+            {GridValue.Empty, Images.Empty },
+            //if the position contains parts of the snake => we want to show the body image
+            {GridValue.Snake, Images.Body },
+            //if the position contains food => then we show the food image
+            {GridValue.Food, Images.Food }
+
+            //note that we omitted the type after new() keyword => you can only do this in newer versions of C#
+            //so if you are having problems the just write the type again
+        };       
+
         //we need 2 variables for the number of rows and columns, we use 15 rows and 15 columns
         private readonly int rows = 15, cols = 15;
 
@@ -21,12 +35,30 @@ namespace SnakeGame
         //this array will make it easy to access the image for a given position in the grid
         private readonly Image[,] gridImages;
 
+        //we also need a GameState object which we will initialize in the constructor
+        private GameState gameState;
+
+
         public MainWindow()
         {
             InitializeComponent();
 
             //Call SetupGrid() method and save the returned array and grid images
             gridImages = SetupGrid();
+
+            //initialize a gameState object
+            gameState = new GameState(rows, cols);
+
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //here we will cal Draw() method 
+            Draw();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
 
         }
 
@@ -65,6 +97,32 @@ namespace SnakeGame
             return images;
 
             //in the constructor we call this method
+        }
+
+        //Method to draw (general method)
+        private void Draw()
+        {
+            DrawGrid();
+
+            //for now it's a bit redundant but it will do more things soon
+        }
+
+        //Method to draw a game grid
+        //this method will look at the grid array in the gameState and update the images to reflect it
+        private void DrawGrid()
+        {
+            //it loops through every grid position 
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0;c < cols; c++)
+                {
+                    //inside the loop we get the grid value at the current position 
+                    GridValue gridVal = gameState.Grid[r, c];
+                    //and set the source for the corresponding image using our dictionary
+                    gridImages[r, c].Source = gridValToImage[gridVal];
+                }
+            }
+            //we will call DrawGrid() from a more general Draw() method
         }
     }
 }
