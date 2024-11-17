@@ -154,7 +154,8 @@ namespace SnakeGame
         {
             DrawGrid();
 
-            //for now it's a bit redundant but it will do more things soon
+            //set the score text to score followed by the actual score stored in the gameState
+            ScoreText.Text = $"SCORE: {gameState.Score}";
         }
 
         //Method to draw a game grid
