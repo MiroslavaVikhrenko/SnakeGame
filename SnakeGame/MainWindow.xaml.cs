@@ -69,6 +69,13 @@ namespace SnakeGame
 
             //start the game loop
             await GameLoop();
+
+            //when the game loop ends => it means that the game is over 
+            //so, we will call ShowGameOver() after that
+            await ShowGameOver();
+
+            //amd we also create a fresh game state for the next game
+            gameState = new GameState(rows, cols);
         }
 
         //when a user presses a key, then Window_PreviewKeyDown() is called
@@ -226,6 +233,19 @@ namespace SnakeGame
                 await Task.Delay(500);
             }
             //we can call this method from RunGame()
+        }
+
+        //Method to show Game Over
+        private async Task ShowGameOver()
+        {
+            //it starts with a 1 sec delay
+            await Task.Delay(1000);
+
+            //and then makes the overlay visible again
+            Overlay.Visibility = Visibility.Visible;
+
+            //in ShowCountDown() method we changes the overlay text, so we must change it back to 'Press any key to start'
+            OverlayText.Text = "PRESS ANY KEY TO START";
         }
     }
 }
