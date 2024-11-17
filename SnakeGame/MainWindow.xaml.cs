@@ -38,6 +38,9 @@ namespace SnakeGame
         //we also need a GameState object which we will initialize in the constructor
         private GameState gameState;
 
+        //add a boolean called gameRunning, it is false by default which is what we need
+        private bool gameRunning;
+
 
         public MainWindow()
         {
@@ -51,13 +54,44 @@ namespace SnakeGame
 
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        //turn Window_Loaded(object sender, RoutedEventArgs e) into RunGame() method
+        //when a user presses the key for the first time, we should call RunGame() method
+        private async Task RunGame()
         {
             //here we will call Draw() method 
             Draw();
 
+            //hide overlay
+            Overlay.Visibility = Visibility.Hidden;           
+
             //start the game loop
             await GameLoop();
+        }
+
+        //when a user presses a key, then Window_PreviewKeyDown() is called
+        //and after that Window_KeyDown() is also called
+        //but we can do smth clever
+        private async void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            //if the overlay is visible, we set the event's Handled property to true
+            //this will prevent Window_KeyDown() from being called
+            //so, while overlay is visible, a key press will only cause the Window_PreviewKeyDown() to be called
+            if (Overlay.Visibility == Visibility.Visible)
+            {
+                e.Handled = true;
+            }
+
+            //if the game is not already running, we set gameRunning to true
+            if (!gameRunning)
+            {
+                gameRunning = true;
+
+                //await RunGame()
+                await RunGame();
+
+                //and when that method is complete, we set gameRunning back to false
+                gameRunning = false;
+            }
         }
 
         //handle some keyboards inputs
@@ -157,6 +191,7 @@ namespace SnakeGame
             //set the score text to score followed by the actual score stored in the gameState
             ScoreText.Text = $"SCORE: {gameState.Score}";
         }
+
 
         //Method to draw a game grid
         //this method will look at the grid array in the gameState and update the images to reflect it
