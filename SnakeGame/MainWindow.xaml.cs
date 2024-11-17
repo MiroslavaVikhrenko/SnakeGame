@@ -264,6 +264,36 @@ namespace SnakeGame
             //we will call this method from the Draw() method
         }
 
+        //Method to draw a dead snake
+        private async Task DrawDeadSnake()
+        {
+            //start by creating a list containing all the snake positions
+            List<Position> positions = new List<Position>(gameState.SnakePositions());
+            //the order in this list is from head to tail
+
+            //next add a loop - it has the same number of iterations as there are positions
+            for (int i = 0; i < positions.Count; i++)
+            {
+                //grab the position at index i 
+                Position pos = positions[i];
+
+                //and decide the image source for that position
+                //if i is 0 => we need an image called 'DeadHead'
+                //otherwise we need an image called 'DeadBody'
+                ImageSource source = (i == 0) ? Images.DeadHead : Images.DeadBody;
+
+                //for the head we do not need to worry about the rotation
+                //because the image will already be rotated correctly by the DrawHead() method
+
+                //next we set the source for the image at the current position
+                gridImages[pos.Row, pos.Col].Source = source;
+
+                //finally we add a small delay
+                await Task.Delay(50);
+            }
+            //we need to call this method from ShowGameOver() method
+        }
+
         //Method to show a countdown
         private async Task ShowCountDown()
         {
@@ -281,6 +311,9 @@ namespace SnakeGame
         //Method to show Game Over
         private async Task ShowGameOver()
         {
+            //draw dead snake
+            DrawDeadSnake();
+
             //it starts with a 1 sec delay
             await Task.Delay(1000);
 
